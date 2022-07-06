@@ -13,6 +13,7 @@ namespace MWI.WebApp.MVC.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
