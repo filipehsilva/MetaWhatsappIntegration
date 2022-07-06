@@ -20,6 +20,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{BB908CAC-13DB-46D2-940C-776BF3EE6EB6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MWI.Admin.Application", "src\MWI.Admin.Application\MWI.Admin.Application.csproj", "{9675038E-6D35-4450-9C82-8218923E0571}"
+	ProjectSection(ProjectDependencies) = postProject
+		{09CE91D8-E49D-4659-A111-10E12B435F21} = {09CE91D8-E49D-4659-A111-10E12B435F21}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MWI.Core", "src\MWI.Core\MWI.Core.csproj", "{09CE91D8-E49D-4659-A111-10E12B435F21}"
 EndProject

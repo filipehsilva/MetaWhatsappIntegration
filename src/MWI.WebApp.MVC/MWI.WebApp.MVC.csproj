@@ -16,7 +16,10 @@
   <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="Extensions\" />
-    <Folder Include="Configuration\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MWI.Core\MWI.Core.csproj" />
   </ItemGroup>
 
 </Project>
