@@ -1,4 +1,7 @@
-﻿using MWI.Core.DomainObjects;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using MWI.Core.DomainObjects;
+using NetDevPack.Domain;
 
 namespace MWI.BitrixPortal.Domain.Entities
 {
@@ -40,6 +43,8 @@ namespace MWI.BitrixPortal.Domain.Entities
 
         public void SetStatusTrial() => PortalStatus = AccountStatusEnum.Trial;
 
+        public void SetApplicationToken(string appToken) => ApplicationToken = appToken;
+
         public void UpdateRefreshToken(string refreshToken) => RefreshToken = refreshToken;
 
         public void SetAdminUsername(string userName) => AdminUserName = userName;
@@ -52,6 +57,19 @@ namespace MWI.BitrixPortal.Domain.Entities
             Email = new Email(email);
         }
 
-
+        public ValidationResult DnsBitrixIsValid()
+        {
+            return new DnsBitrixValidation().Validate(this);
+        }
     }
+
+    public class DnsBitrixValidation : AbstractValidator<Portal>
+    {
+        public DnsBitrixValidation()
+        {
+            RuleFor(p => p.Domain)
+                .Must(domain => domain.Contains("bitrix24"));
+        }
+    }
+
 }

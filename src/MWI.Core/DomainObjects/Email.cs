@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using NetDevPack.Domain;
+using System.Text.RegularExpressions;
 
 namespace MWI.Core.DomainObjects
 {
