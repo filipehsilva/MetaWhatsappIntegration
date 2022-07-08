@@ -2,11 +2,6 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MWI.BitrixPortal.Domain.Entities;
 using MWI.Core.DomainObjects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MWI.BitrixPortal.Data.Mappings
 {
@@ -16,11 +11,27 @@ namespace MWI.BitrixPortal.Data.Mappings
         {
             builder.HasKey(c => c.Id);
 
-            builder.Property(c => c.MemberId).IsRequired();
+            builder.Property(c => c.MemberId)
+                .IsRequired()
+                .HasColumnType($"varchar(40)");
 
-            builder.Property(c => c.Domain).IsRequired();
+            builder.Property(c => c.Domain)
+                .IsRequired()
+                .HasColumnType($"varchar(100)");
 
-            builder.Property(c => c.Language).IsRequired().HasMaxLength(2);
+            builder.Property(c => c.Language)
+                .IsRequired()
+                .HasColumnType($"varchar(4)");
+
+            builder.Property(c => c.ApplicationToken)
+                .HasColumnType($"varchar(40)");
+
+            builder.Property(c => c.BitrixAccountStatus)
+                .IsRequired()
+                .HasColumnType("char");
+
+            builder.Property(c => c.AdminUserName)
+                .HasColumnType($"varchar(100)");
 
             builder.OwnsOne(c => c.Email, tf =>
             {
@@ -28,6 +39,20 @@ namespace MWI.BitrixPortal.Data.Mappings
                     .HasColumnName("Email")
                     .HasColumnType($"varchar({Email.AddressMaxLength})");
             });
+
+            builder.Property(c => c.RefreshToken)
+                .IsRequired()
+                .HasColumnType($"varchar(40)");
+
+            builder.Property(c => c.Active)
+                .HasColumnType("bit");
+
+            builder.Property(c => c.WizardMode)
+                .HasColumnType("bit");
+
+            builder.Property(c => c.PortalStatus)
+                .IsRequired()
+                .HasColumnType("char");
 
             builder.ToTable("Portals");
         }
