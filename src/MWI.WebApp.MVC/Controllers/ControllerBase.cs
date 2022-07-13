@@ -3,15 +3,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MWI.Core.Communication.Mediator;
 using MWI.Core.Messages.CommonMessages.Notifications;
+using MWI.WebApp.MVC.Models;
+using System.Diagnostics;
 
 namespace MWI.WebApp.MVC.Controllers
 {
-    public abstract class ApiControllerBase : ControllerBase
+    public abstract class ControllerBase : Controller
     {
         private readonly DomainNotificationHandler _notifications;
         private readonly IMediatorHandler _mediatorHandler;
 
-        protected ApiControllerBase(INotificationHandler<DomainNotification> notifications, IMediatorHandler mediatorHandler)
+        protected ControllerBase(INotificationHandler<DomainNotification> notifications, IMediatorHandler mediatorHandler)
         {
             _notifications = (DomainNotificationHandler)notifications;
             _mediatorHandler = mediatorHandler;
@@ -63,6 +65,12 @@ namespace MWI.WebApp.MVC.Controllers
                 var errorMsg = erro.Exception == null ? erro.ErrorMessage : erro.Exception.Message;
                 NotifyError("400", errorMsg);
             }
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        protected IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

@@ -18,11 +18,13 @@ namespace MWI.BitrixPortal.Domain.Entities
         public bool WizardMode { get; private set; }
         public bool InstallStatus { get; private set; }
         public char PortalStatus { get; private set; }
+        public string? ClientEndpoint { get; private set; }
+        public string? ServerEndpoint { get; private set; }
 
         protected Portal() { }
 
         public Portal(string memberId, string domain, string language, string applicationToken, 
-            char bitrixAccountStatus, string refreshToken)
+            char bitrixAccountStatus, string refreshToken, string clientEndpoint = null!, string serverEndpoint = null!)
         {
             MemberId = memberId;
             Domain = domain;
@@ -34,6 +36,8 @@ namespace MWI.BitrixPortal.Domain.Entities
             WizardMode = true;
             PortalStatus = 'F';
             InstallStatus = false;
+            ClientEndpoint = clientEndpoint;
+            ServerEndpoint = serverEndpoint;
         }
 
         public void Activate() => Active = true;
@@ -41,6 +45,9 @@ namespace MWI.BitrixPortal.Domain.Entities
 
         public void SetInstallStatusTrue() => Active = true;
         public void SetInstallStatusFalse() => Active = false;
+
+        public void SetClientEndpoint(string endpoint) => ClientEndpoint = endpoint;
+        public void SetServerEndpoint(string endpoint) => ServerEndpoint = endpoint;
 
         public void SetStatusPaid() => PortalStatus = 'P';
         public void SetStatusTrial() => PortalStatus = 'T';

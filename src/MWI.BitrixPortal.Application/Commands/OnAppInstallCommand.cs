@@ -12,9 +12,11 @@ namespace MWI.BitrixPortal.Application.Commands
         public string ApplicationToken { get; private set; }
         public char BitrixAccountStatus { get; private set; }
         public string RefreshToken { get; private set; }
+        public string ClientEndpoint { get; private set; }
+        public string ServerEndpoint { get; private set; }
 
-        public OnAppInstallCommand(string @event, string memberId, string domain, string language, 
-            string applicationToken, char bitrixAccountStatus, string refreshToken)
+        public OnAppInstallCommand(string @event, string memberId, string domain, string language,
+            string applicationToken, char bitrixAccountStatus, string refreshToken, string clientEndpoint, string serverEndpoint)
         {
             Event = @event;
             MemberId = memberId;
@@ -23,6 +25,8 @@ namespace MWI.BitrixPortal.Application.Commands
             ApplicationToken = applicationToken;
             BitrixAccountStatus = bitrixAccountStatus;
             RefreshToken = refreshToken;
+            ClientEndpoint = clientEndpoint;
+            ServerEndpoint = serverEndpoint;
         }
 
         public override bool IsValid()
@@ -55,6 +59,14 @@ namespace MWI.BitrixPortal.Application.Commands
             RuleFor(p => p.RefreshToken)
                 .NotEmpty()
                 .WithMessage("RefToken is empty");
+
+            RuleFor(p => p.ClientEndpoint)
+                .NotEmpty()
+                .WithMessage("ClientEndpoint is empty");
+
+            RuleFor(p => p.ServerEndpoint)
+                .NotEmpty()
+                .WithMessage("ServerEndpoint is empty");
         }
     }
 }

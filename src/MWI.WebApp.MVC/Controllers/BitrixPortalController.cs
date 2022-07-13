@@ -9,7 +9,7 @@ namespace MWI.WebApp.MVC.Controllers
 {
     [Route("v1/bitrixportal")]
     [ApiController]
-    public class BitrixPortalController : ApiControllerBase
+    public class BitrixPortalController : ControllerBase
     {
         private readonly IMediatorHandler _mediatorHandler;
 
@@ -26,7 +26,8 @@ namespace MWI.WebApp.MVC.Controllers
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
             var command = new OnAppInstallCommand(model.Event, model.Auth.Member_Id, model.Auth.Domain, 
-                model.Data.Language_Id, model.Auth.Application_Token, model.Auth.Status, model.Auth.Refresh_Token);
+                model.Data.Language_Id, model.Auth.Application_Token, model.Auth.Status, model.Auth.Refresh_Token,
+                model.Auth.Client_Endpoint, model.Auth.Server_Endpoint);
 
             await _mediatorHandler.SendCommand(command);
 

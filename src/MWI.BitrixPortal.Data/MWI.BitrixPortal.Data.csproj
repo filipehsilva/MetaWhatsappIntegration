@@ -24,4 +24,8 @@
     <ProjectReference Include="..\MWI.Core\MWI.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 </Project>
