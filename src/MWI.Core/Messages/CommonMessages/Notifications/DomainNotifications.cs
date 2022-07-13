@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using NetDevPack.Messaging;
 
 namespace MWI.Core.Messages.CommonMessages.Notifications
 {

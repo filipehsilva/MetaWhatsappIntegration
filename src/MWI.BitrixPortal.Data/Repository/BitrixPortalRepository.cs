@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MWI.BitrixPortal.Domain;
 using MWI.BitrixPortal.Domain.Entities;
-using NetDevPack.Data;
+using MWI.Core.Data;
 using System.Data.Common;
 
 namespace MWI.BitrixPortal.Data.Repository
@@ -14,8 +14,6 @@ namespace MWI.BitrixPortal.Data.Repository
         {
             _context = context;
         }
-
-        #nullable disable
 
         public IUnitOfWork UnitOfWork => _context;
 
@@ -33,7 +31,15 @@ namespace MWI.BitrixPortal.Data.Repository
 
         public async Task<Portal> GetPortalById(Guid id)
         {
-            return await _context.Portals.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
+            return await _context.Portals.FindAsync(id);
+        }
+
+        public async Task<Portal> GetPortalByMemberId(string memberId)
+        {
+            var portal = await _context.Portals.FirstOrDefaultAsync(p => p.MemberId == memberId);
+            if (portal == null) return null;
+
+            return portal;
         }
 
         public void Remove(Portal portal)

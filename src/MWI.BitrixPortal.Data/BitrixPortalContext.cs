@@ -2,9 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using MWI.BitrixPortal.Domain.Entities;
 using MWI.Core.Communication.Mediator;
-using NetDevPack.Data;
-using NetDevPack.Domain;
-using NetDevPack.Messaging;
+using MWI.Core.Data;
+using MWI.Core.Messages;
 
 namespace MWI.BitrixPortal.Data
 {
@@ -18,7 +17,7 @@ namespace MWI.BitrixPortal.Data
             _mediatorHandler = mediatorHandler;
         }
 
-        public DbSet<Portal>? Portals { get; set; }
+        public DbSet<Portal> Portals { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -56,32 +55,6 @@ namespace MWI.BitrixPortal.Data
             if (sucess) await _mediatorHandler.PublishEvents(this);
 
             return sucess;
-        }
-    }
-
-
-    public static class MediatorExtension
-    {
-        public static async Task PublishEvents<T>(this IMediatorHandler mediator, T ctx) where T : DbContext
-        {
-            var entities = ctx.ChangeTracker
-                .Entries<Entity>()
-                .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any());
-
-            var domainEvents = entities
-                .SelectMany(x => x.Entity.DomainEvents)
-                .ToList();
-
-            entities.ToList()
-                .ForEach(entity => entity.Entity.ClearDomainEvents());
-
-            var tasks = domainEvents
-                .Select(async (domainEvent) =>
-                {
-                    await mediator.PublishEvent(domainEvent);
-                });
-
-            await Task.WhenAll(tasks);
         }
     }
 }

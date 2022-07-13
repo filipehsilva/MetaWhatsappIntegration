@@ -6,4 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Queries\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MWI.BitrixPortal.Domain\MWI.BitrixPortal.Domain.csproj" />
+    <ProjectReference Include="..\MWI.Core\MWI.Core.csproj" />
+  </ItemGroup>
+
 </Project>

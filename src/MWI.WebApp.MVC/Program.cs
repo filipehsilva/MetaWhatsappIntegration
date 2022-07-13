@@ -14,6 +14,8 @@ builder.Services.AddDbContext<BitrixPortalContext>(options =>
 
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 
+builder.Services.AddApiConfig();
+
 builder.Services.RegisterServices();
 
 var app = builder.Build();
@@ -32,8 +34,13 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapAreaControllerRoute(
+    name: "WizardArea",
+    areaName: "Wizard",
+    pattern: "Wizard/{controller=Home}/{action=Index}/{id?}");
+
+//app.MapControllerRoute(
+//    name: "default",
+//    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

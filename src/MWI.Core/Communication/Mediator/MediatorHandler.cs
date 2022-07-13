@@ -1,7 +1,6 @@
-﻿using FluentValidation.Results;
-using MediatR;
+﻿using MediatR;
+using MWI.Core.Messages;
 using MWI.Core.Messages.CommonMessages.Notifications;
-using NetDevPack.Messaging;
 
 namespace MWI.Core.Communication.Mediator
 {
@@ -14,7 +13,7 @@ namespace MWI.Core.Communication.Mediator
             _mediator = mediator;
         }
 
-        public async Task<ValidationResult> SendCommand<T>(T comando) where T : Command
+        public async Task<bool> SendCommand<T>(T comando) where T : Command
         {
             return await _mediator.Send(comando);
         }

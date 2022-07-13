@@ -16,14 +16,18 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.6" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Wizard\Data\" />
+    <Folder Include="Areas\Wizard\Models\" />
     <Folder Include="Data\" />
     <Folder Include="Extensions\" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MWI.BitrixPortal.Application\MWI.BitrixPortal.Application.csproj" />
     <ProjectReference Include="..\MWI.BitrixPortal.Data\MWI.BitrixPortal.Data.csproj" />
     <ProjectReference Include="..\MWI.Core\MWI.Core.csproj" />
   </ItemGroup>

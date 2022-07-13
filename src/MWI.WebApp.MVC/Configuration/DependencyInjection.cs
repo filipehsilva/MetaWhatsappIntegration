@@ -1,5 +1,8 @@
 ﻿using MediatR;
+using MWI.BitrixPortal.Application.Commands;
 using MWI.BitrixPortal.Data;
+using MWI.BitrixPortal.Data.Repository;
+using MWI.BitrixPortal.Domain;
 using MWI.Core.Communication.Mediator;
 using MWI.Core.Messages.CommonMessages.Notifications;
 
@@ -17,6 +20,8 @@ namespace MWI.WebApp.MVC.Configuration
 
             //Bitrix Portal
             services.AddScoped<BitrixPortalContext>();
+            services.AddScoped<IBitrixPortalRepository, BitrixPortalRepository>();
+            services.AddScoped<IRequestHandler<OnAppInstallCommand, bool>, BitrixPortalCommandHandler>();
         }
     }
 }
