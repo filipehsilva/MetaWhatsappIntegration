@@ -14,9 +14,10 @@ namespace MWI.BitrixPortal.Application.Commands
         public string RefreshToken { get; private set; }
         public string ClientEndpoint { get; private set; }
         public string ServerEndpoint { get; private set; }
+        public string AccessToken { get; private set; }
 
         public OnAppInstallCommand(string @event, string memberId, string domain, string language,
-            string applicationToken, char bitrixAccountStatus, string refreshToken, string clientEndpoint, string serverEndpoint)
+            string applicationToken, char bitrixAccountStatus, string refreshToken, string clientEndpoint, string serverEndpoint, string accessToken)
         {
             Event = @event;
             MemberId = memberId;
@@ -27,6 +28,7 @@ namespace MWI.BitrixPortal.Application.Commands
             RefreshToken = refreshToken;
             ClientEndpoint = clientEndpoint;
             ServerEndpoint = serverEndpoint;
+            AccessToken = accessToken;
         }
 
         public override bool IsValid()

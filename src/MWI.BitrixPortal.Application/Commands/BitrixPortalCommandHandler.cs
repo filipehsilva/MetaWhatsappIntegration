@@ -14,11 +14,17 @@ namespace MWI.BitrixPortal.Application.Commands
     {
         private readonly IMediatorHandler _mediatorHandler;
         private readonly IBitrixPortalRepository _portalRepository;
+        private readonly IBitrixPortalService _bitrix;
+        private readonly DomainNotificationHandler _notifications;
 
-        public BitrixPortalCommandHandler(IMediatorHandler mediatorHandler, IBitrixPortalRepository bitrixPortalRepository)
+        public BitrixPortalCommandHandler(IMediatorHandler mediatorHandler, 
+            IBitrixPortalRepository bitrixPortalRepository, IBitrixPortalService bitrix,
+            INotificationHandler<DomainNotification> notifications)
         {
             _mediatorHandler = mediatorHandler;
             _portalRepository = bitrixPortalRepository;
+            _bitrix = bitrix;
+            _notifications = (DomainNotificationHandler)notifications;
         }
 
         public async Task<bool> Handle(OnAppInstallCommand command, CancellationToken cancellationToken)
@@ -34,7 +40,8 @@ namespace MWI.BitrixPortal.Application.Commands
                     existingPortal.SetApplicationToken(command.ApplicationToken);
                     _portalRepository.Update(existingPortal);
 
-                    existingPortal.AddDomainEvent(new BitrixPortalUpdatedEvent(existingPortal.Id, existingPortal.MemberId!));
+                    existingPortal.AddDomainEvent(new BitrixPortalUpdatedEvent(existingPortal.Id, existingPortal.MemberId!, existingPortal.InstallStatus,
+                        command.AccessToken, existingPortal.ClientEndpoint!));
                 }
 
                 await _mediatorHandler.PublishNotification(new DomainNotification("Bitrix Portal", "Portal already registered"));
@@ -47,7 +54,8 @@ namespace MWI.BitrixPortal.Application.Commands
 
             _portalRepository.Add(newBitrixPortal);
 
-            newBitrixPortal.AddDomainEvent(new RegisteredBitrixPortalEvent(newBitrixPortal.Id, newBitrixPortal.MemberId!));
+            newBitrixPortal.AddDomainEvent(new RegisteredBitrixPortalEvent(newBitrixPortal.Id, newBitrixPortal.MemberId!, newBitrixPortal.InstallStatus,
+                command.AccessToken, newBitrixPortal.ClientEndpoint!));
 
             return await _portalRepository.UnitOfWork.Commit();
         }
@@ -64,22 +72,62 @@ namespace MWI.BitrixPortal.Application.Commands
                 return false;
             }
 
+            // Adiciona o Widget do Canal Aberto com o link da controller que redireciona para view
+            var responseAddConnector = await _bitrix.RegisterConnector(command.ClientEndpoint, command.AccessToken);
 
-            // Aplicar o RetryPattern (Polly)
+            if (responseAddConnector is false)
+                await _mediatorHandler.PublishNotification(new DomainNotification("Bitrix Service", "Register Connector Not binded"));
 
-            // Adiciona o Widget do Canal Aberto
+            // Realizar o event.bind do OnImConnectorMessageAdd
+            var eventBind = await _bitrix.EventBindOnImConnectorMessageAdd(command.ClientEndpoint, command.AccessToken);
+
+            if (eventBind is false)
+                await _mediatorHandler.PublishNotification(new DomainNotification("Bitrix Service", "OnImConnectorMessageAdd not binded"));
 
             // Adiciona como provedor de SMS
+            var registerSms = await _bitrix.RegisterSmsConnector(command.ClientEndpoint, command.AccessToken);
+
+            if (registerSms is false)
+                await _mediatorHandler.PublishNotification(new DomainNotification("Bitrix Service", "Register SMS not binded"));
 
             // Criar o Placement Default -> Handler Dashboard
+            var placementDefault = await _bitrix.AddPlacementBind(command.ClientEndpoint, command.AccessToken);
+
+            if (placementDefault is false)
+                await _mediatorHandler.PublishNotification(new DomainNotification("Bitrix Service", "Default Placement is not binded"));
 
             // Criar o Placement Deal, Contact, Company, Spa -> Handler Send Template Messages
+            var placementDeal = await _bitrix.AddPlacementBind(command.ClientEndpoint, command.AccessToken, "CRM_DEAL_DETAIL_TAB");
+
+            if (placementDeal is false)
+                await _mediatorHandler.PublishNotification(new DomainNotification("Bitrix Service", "Deal Placement is not binded"));
+
+            var placementLead = await _bitrix.AddPlacementBind(command.ClientEndpoint, command.AccessToken, "CRM_LEAD_DETAIL_TAB");
+
+            if (placementLead is false)
+                await _mediatorHandler.PublishNotification(new DomainNotification("Bitrix Service", "Lead Placement is not binded"));
+
+            var placementContact = await _bitrix.AddPlacementBind(command.ClientEndpoint, command.AccessToken, "CRM_CONTACT_DETAIL_TAB");
+
+            if (placementContact is false)
+                await _mediatorHandler.PublishNotification(new DomainNotification("Bitrix Service", "Contact Placement is not binded"));
+
+            var placementCompany = await _bitrix.AddPlacementBind(command.ClientEndpoint, command.AccessToken, "CRM_COMPANY_DETAIL_TAB");
+
+            if (placementCompany is false)
+                await _mediatorHandler.PublishNotification(new DomainNotification("Bitrix Service", "Company Placement is not binded"));
 
             // Ação no RobotBizProc para envio de msg template Text / Arquivo
 
             // Adiciona janela de msg template no Chat
 
-            return true;
+            if (_notifications.HasNotifications())
+                return false;
+
+            existingPortal.SetInstallStatusTrue();
+            _portalRepository.Update(existingPortal);
+
+            return await _portalRepository.UnitOfWork.Commit();
         }
 
         private bool ValidateCommand(Command message)

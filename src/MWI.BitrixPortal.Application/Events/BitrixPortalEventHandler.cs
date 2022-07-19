@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using MWI.BitrixPortal.Application.Commands;
 using MWI.Core.Communication.Mediator;
 
 namespace MWI.BitrixPortal.Application.Events
@@ -14,14 +15,18 @@ namespace MWI.BitrixPortal.Application.Events
             _mediatorHandler = mediatorHandler;
         }
 
-        public Task Handle(RegisteredBitrixPortalEvent notification, CancellationToken cancellationToken)
+        public async Task Handle(RegisteredBitrixPortalEvent notification, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            if (!notification.InstallStatus)
+                await _mediatorHandler.SendCommand(new InstallModulesInBitrixPortalCommand(notification.BitrixPortalId,
+                    notification.BitrixPortalMemberId, notification.AccessToken, notification.ClientEndpoint));
         }
 
-        public Task Handle(BitrixPortalUpdatedEvent notification, CancellationToken cancellationToken)
+        public async Task Handle(BitrixPortalUpdatedEvent notification, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            if (!notification.InstallStatus)
+                await _mediatorHandler.SendCommand(new InstallModulesInBitrixPortalCommand(notification.BitrixPortalId,
+                    notification.BitrixPortalMemberId, notification.AccessToken, notification.ClientEndpoint));
         }
     }
 }

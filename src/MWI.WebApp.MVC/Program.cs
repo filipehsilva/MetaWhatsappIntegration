@@ -39,6 +39,11 @@ app.MapAreaControllerRoute(
     areaName: "Wizard",
     pattern: "Wizard/{controller=Home}/{action=Index}/{id?}");
 
+app.MapAreaControllerRoute(
+    name: "DashboardArea",
+    areaName: "Dashboard",
+    pattern: "Wizard/{controller=Home}/{action=Index}/{id?}");
+
 //app.MapControllerRoute(
 //    name: "default",
 //    pattern: "{controller=Home}/{action=Index}/{id?}");
